@@ -1,4 +1,4 @@
 ﻿  main.cpp
-C:\Users\ja\Desktop\kółko i krzyżyk\proj\tic-tac-toe\tic-tac-toe\main.cpp(67,77): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\ja\Desktop\kółko i krzyżyk\proj\tic-tac-toe\tic-tac-toe\main.cpp(67,55): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\ja\Desktop\kółko i krzyżyk\proj\tic-tac-toe\tic-tac-toe\main.cpp(85,77): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\ja\Desktop\kółko i krzyżyk\proj\tic-tac-toe\tic-tac-toe\main.cpp(85,55): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
   tic-tac-toe.vcxproj -> C:\Users\ja\Desktop\kółko i krzyżyk\proj\tic-tac-toe\x64\Debug\tic-tac-toe.exe

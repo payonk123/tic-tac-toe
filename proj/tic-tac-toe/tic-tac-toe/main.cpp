@@ -1,10 +1,28 @@
 #include <SFML/Graphics.hpp>
+#include <iostream> //nowe
+#include <fstream> //nowe
+#include <ctime> //nowe
+#include <iomanip>//nowe
 #include "Button.h"
 #include "Game.h"
 
+void wczytaj_wynik(int wynik);
+
 int main()
 {
+    sf::Font font;
+    font.loadFromFile("ARLRDBD.ttf");
 
+    //nowe: zmienne s³u¿¹ce do zapisywania wyników
+    int wynikdraw = 0;
+    int wynikkolko = 0;
+    int wynikkrzyzyk = 0;
+
+    bool koniec_gry = false;
+    sf::Text napis_koncowy;
+    napis_koncowy.setPosition(360, 360);
+    napis_koncowy.setFont(font);
+  
     int result = -2;
 
     Game board;
@@ -27,7 +45,7 @@ int main()
     sf::Texture X_texture;
     X_texture.loadFromFile("1.png");
     int player = 1;
-    sf::RenderWindow window(sf::VideoMode(900, 900), "Kolko & Krzyzyk", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(900, 900), "Kolko & Krzyzyk!1!111!!", sf::Style::Close);
     sf::Vector2f btnSize;
     btnSize.x = 180;
     btnSize.y = 180;
@@ -93,6 +111,16 @@ int main()
                             }
 
                     }
+                    else if (n.is_mouse_on_element(window)) {
+                        koniec_gry = true;
+                        std::string wyniki = "Draw: ";
+                        wyniki = wyniki + std::to_string(wynikdraw);
+                        wyniki = wyniki + "\nKolko: ";
+                        wyniki = wyniki + std::to_string(wynikkolko);
+                        wyniki = wyniki + "\nKrzyzyk: ";
+                        wyniki = wyniki + std::to_string(wynikkrzyzyk);
+                        napis_koncowy.setString(wyniki);
+                    }
                     continue;        
                 }
 
@@ -109,6 +137,19 @@ int main()
                                     array[i][j]->element.setTexture(&O_texture);
                                 result = board.result();
                                 if (result != -2) {
+                                    if (result == 1) {
+                                        text.setTexture(&X_won);
+                                        wynikkrzyzyk++;//nowe
+                                    }
+                                    else if (result == 0) {
+                                        text.setTexture(&O_won);
+                                        wynikkolko++;//nowe
+                                    }
+                                    else if (result == -1) {
+                                        text.setTexture(&draw);
+                                        wynikdraw++;//nowe
+                                    }
+                                    wczytaj_wynik(result);
                                     for (i = 0; i < 3; i++)
                                         for (j = 0; j < 3; j++) {
                                             array[i][j]->flag = true;
@@ -131,30 +172,41 @@ int main()
 
         
         window.clear(sf::Color(248, 189, 255));
-        
-        for (i = 0; i < 3; i++)
-            for (j = 0; j < 3; j++)
-                window.draw(array[i][j]->element);
+        if (koniec_gry == false) {
+            for (i = 0; i < 3; i++)
+                for (j = 0; j < 3; j++)
+                    window.draw(array[i][j]->element);
 
-        if (result != -2) {
-            window.draw(y.element);
-            window.draw(n.element);
+            if (result != -2) {
+                window.draw(y.element);
+                window.draw(n.element);
+            }
+            else if (player == 1)
+                text.setTexture(&X_turn);
+            else
+                text.setTexture(&O_turn);
 
-            if (result == 1)
-                text.setTexture(&X_won);
-            else if (result == 0)
-                text.setTexture(&O_won);
-            else if (result == -1)
-                text.setTexture(&draw);
+            window.draw(text);
         }
-        else if (player == 1)
-            text.setTexture(&X_turn);
         else
-            text.setTexture(&O_turn);
-
-        window.draw(text);
+            window.draw(napis_koncowy);
+            
         window.display();
     }
 
     return 0;
+}
+
+void wczytaj_wynik(int wynik) {
+    std::time_t t = std::time(nullptr);  // Pobierz aktualny czas
+    std::tm local_time;
+    localtime_s(&local_time, &t);
+    std::ofstream MyFile("WYNIKI.txt", std::ios_base::app);
+    if (wynik == -1)
+        MyFile << "\nRemis: " << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+    else if (wynik == 0)
+        MyFile << "\nKolko wygralo: " << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+    else if (wynik == 1)
+        MyFile << "\nKrzyzyk wygral: " << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+    MyFile.close();
 }
